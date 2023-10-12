@@ -1,5 +1,9 @@
-message(STATUS "Searching for Slint...")
+if(NOT QT_DEFAULT_MAJOR_VERSION)
+    set(QT_DEFAULT_MAJOR_VERSION 5 CACHE STRING "Qt version to use (5 or 6), defaults to 5")
+endif()
+
 find_package(Slint REQUIRED)
+find_package(Qt${QT_DEFAULT_MAJOR_VERSION} REQUIRED COMPONENTS Core Gui Widgets)
 
 ## Sources
 set(HDRS
@@ -54,9 +58,19 @@ if(CMAKE_CXX_COMPILER)
 else()
   message(FATAL_ERROR "Could not find C++ compiler")
 endif()
+# get_target_property(SLINT_EXECUTABLE_LOCATION Slint::Slint PARENT_DIRECTORY)
+# if(SLINT_EXECUTABLE_LOCATION STREQUAL "SLINT_EXECUTABLE_LOCATION-NOTFOUND")
+#  message(FATAL_ERROR "Could not find Slint exectuable location. Missing variable SLINT_EXECUTABLE_LOCATION.")
+# endif()
+# message(STATUS "Found SLINT_EXECUTABLE_LOCATION ${SLINT_EXECUTABLE_LOCATION}")
+get_target_property(QT_EXECUTABLE_LOCATION Qt${QT_DEFAULT_MAJOR_VERSION}::Core LOCATION)
+if(QT_EXECUTABLE_LOCATION STREQUAL "QT_EXECUTABLE_LOCATION-NOTFOUND")
+  message(FATAL_ERROR "Could not find QT exectuable location. Missing variable QT_EXECUTABLE_LOCATION.")
+endif()
+message(STATUS "Found QT_EXECUTABLE_LOCATION: ${QT_EXECUTABLE_LOCATION}")
 install(TARGETS ${PROJECT_NAME}Executable RUNTIME_DEPENDENCIES
   PRE_EXCLUDE_REGEXES "api-ms-" "ext-ms-"
   POST_EXCLUDE_REGEXES ".*system32/.*\\.dll"
-  DIRECTORIES ${CMAKE_CXX_COMPILER}
+  DIRECTORIES [ ${COMPILER_PATH} "${QT_EXECUTABLE_LOCATION}/.." ]
   DESTINATION executable
 )
