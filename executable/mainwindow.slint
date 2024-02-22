@@ -12,7 +12,6 @@ export component MainWindow {
     callback modelAppend(string);
     callback modelDeleteEntry(int);
     in-out property <[Entry]> model: [];
-    in-out property <string> textValue: "";
 
     VerticalLayout {
         width: 100%;
@@ -27,8 +26,7 @@ export component MainWindow {
                 horizontal-stretch: 1;
                 text: "Add";
                 clicked => {
-                    textValue = textEdit.text;
-                    root.modelAppend(textValue);
+                    root.modelAppend(textEdit.text);
                 }
             }
         }
