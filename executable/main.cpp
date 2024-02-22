@@ -82,6 +82,8 @@ int main(int argc, char *argv[])
             mainWindow->set_model(std::make_shared<slint::VectorModel<Entry>>(model));
         });
 
+    mainWindow->set_model(std::make_shared<slint::VectorModel<Entry>>(model));
+
     mainWindow->run();
     return 0;
 }
