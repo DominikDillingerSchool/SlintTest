@@ -9,11 +9,10 @@ export component MainWindow {
     width: 500px;
     height: 500px;
 
-    callback modelAppend();
+    callback modelAppend(string);
     callback modelDeleteEntry(int);
     in-out property <[Entry]> model: [];
     in-out property <string> textValue: "";
-    in-out property <int> listViewIdCount: 0;
 
     VerticalLayout {
         width: 100%;
@@ -29,7 +28,7 @@ export component MainWindow {
                 text: "Add";
                 clicked => {
                     textValue = textEdit.text;
-                    root.modelAppend();
+                    root.modelAppend(textValue);
                 }
             }
         }

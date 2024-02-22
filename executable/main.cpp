@@ -40,51 +40,47 @@ int main(int argc, char *argv[])
 {
     auto mainWindow = MainWindow::create();
 
-    mainWindow->on_modelAppend([mainWindowWeakHandle = slint::ComponentWeakHandle(mainWindow)] {
-        auto mainWindow = *mainWindowWeakHandle.lock();
+    long lastModelId = 0;
+    std::vector<Entry> model;
 
+    mainWindow->on_modelAppend([mainWindowWeakHandle = slint::ComponentWeakHandle(mainWindow), &model,
+                                &lastModelId](const slint::SharedString &nextEntryText) {
         // Check if input string valid
-        const auto nextEntryText = mainWindow->get_textValue();
         const char *trimmedEntryText = trim(nextEntryText.data());
         if (trimmedEntryText == nullptr || *trimmedEntryText == '\0')
         {
             return;
         }
-        const int currentId = mainWindow->get_listViewIdCount();
-        const Entry nextEntry = {currentId, nextEntryText};
-        mainWindow->set_listViewIdCount(currentId + 1);
 
-        // Copy currentModel and append nextEntry
-        const auto currentModel = mainWindow->get_model();
-        std::vector<Entry> newModel;
-        for (long i = 0; i < currentModel->row_count(); i++)
-        {
-            newModel.push_back(*currentModel->row_data(i));
-        }
-        newModel.push_back(nextEntry);
+        // Add new entry to model
+        const Entry nextEntry = {lastModelId, nextEntryText};
+        lastModelId++;
+        model.push_back(nextEntry);
 
-        mainWindow->set_model(std::make_shared<slint::VectorModel<Entry>>(newModel));
+        // Update
+        auto mainWindow = *mainWindowWeakHandle.lock();
+        mainWindow->set_model(std::make_shared<slint::VectorModel<Entry>>(model));
     });
 
-    mainWindow->on_modelDeleteEntry([mainWindowWeakHandle = slint::ComponentWeakHandle(mainWindow)](int idToDelete) {
-        auto mainWindow = *mainWindowWeakHandle.lock();
-
-        // Find id and delete
-        const auto currentModel = mainWindow->get_model();
-        std::vector<Entry> newModel;
-        for (long i = 0; i < currentModel->row_count(); i++)
-        {
-            const Entry entry = *currentModel->row_data(i);
-            if (entry.id == idToDelete)
+    mainWindow->on_modelDeleteEntry(
+        [mainWindowWeakHandle = slint::ComponentWeakHandle(mainWindow), &model](const int idToDelete) {
+            // Find matching ids and delete
+            for (auto iterator = model.begin(); iterator != model.end();)
             {
-                continue;
+                if (iterator->id == idToDelete)
+                {
+                    iterator = model.erase(iterator);
+                }
+                else
+                {
+                    iterator++;
+                }
             }
 
-            newModel.push_back(*currentModel->row_data(i));
-        }
-
-        mainWindow->set_model(std::make_shared<slint::VectorModel<Entry>>(newModel));
-    });
+            // Update
+            auto mainWindow = *mainWindowWeakHandle.lock();
+            mainWindow->set_model(std::make_shared<slint::VectorModel<Entry>>(model));
+        });
 
     mainWindow->run();
     return 0;
