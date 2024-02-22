@@ -53,7 +53,7 @@ int main(int argc, char *argv[])
         }
 
         // Add new entry to model
-        const Entry nextEntry = {lastModelId, nextEntryText};
+        const Entry nextEntry = {lastModelId, trimmedEntryText};
         lastModelId++;
         model.push_back(nextEntry);
 
