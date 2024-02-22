@@ -1,12 +1,61 @@
-import { Button, VerticalBox } from "std-widgets.slint";
-export component Demo {
-    VerticalBox {
-        alignment: start;
-        Text {
-            text: "Hello World!";
-            font-size: 24px;
-            horizontal-alignment: center;
+import { Button, TextEdit, ListView } from "std-widgets.slint";
+
+struct Entry {
+    id: int,
+    text: string
+}
+
+export component MainWindow {
+    width: 500px;
+    height: 500px;
+
+    callback modelAppend();
+    callback modelDeleteEntry(int);
+    in-out property <[Entry]> model: [];
+    in-out property <string> textValue: "";
+    in-out property <int> listViewIdCount: 0;
+
+    VerticalLayout {
+        width: 100%;
+        height: 100%;
+        HorizontalLayout {
+            vertical-stretch: 2;
+            textEdit := TextEdit {
+                horizontal-stretch: 3;
+            }
+
+            buttonAdd := Button {
+                horizontal-stretch: 1;
+                text: "Add";
+                clicked => {
+                    textValue = textEdit.text;
+                    root.modelAppend();
+                }
+            }
         }
-        HorizontalLayout { alignment: center; Button { text: "OK!"; } }
+
+        listView := ListView {
+            vertical-stretch: 8;
+            for data in model: Rectangle {
+                height: 30px;
+                width: parent.width;
+                HorizontalLayout {
+                    Text {
+                        text: data.text;
+                        horizontal-stretch: 1;
+                    }
+                    Rectangle {
+                        horizontal-stretch: 8;
+                    }
+                    Button {
+                        text: "Delete";
+                        horizontal-stretch: 1;
+                        clicked => {
+                            modelDeleteEntry(data.id);
+                        }
+                    }
+                }
+            }
+        }
     }
 }
