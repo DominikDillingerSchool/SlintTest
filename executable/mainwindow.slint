@@ -39,14 +39,11 @@ export component MainWindow {
                 HorizontalLayout {
                     Text {
                         text: data.text;
-                        horizontal-stretch: 1;
-                    }
-                    Rectangle {
-                        horizontal-stretch: 8;
+                        width: parent.width * 0.8;
                     }
                     Button {
                         text: "Delete";
-                        horizontal-stretch: 1;
+                        width: parent.width * 0.2;
                         clicked => {
                             modelDeleteEntry(data.id);
                         }
