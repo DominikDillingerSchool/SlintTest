@@ -41,10 +41,10 @@ int main(int argc, char *argv[])
     auto mainWindow = MainWindow::create();
 
     long lastModelId = 0;
-    std::vector<Entry> model;
+    auto model = std::make_shared<slint::VectorModel<Entry>>(std::vector<Entry>());
+    mainWindow->set_model(model);
 
-    mainWindow->on_modelAppend([mainWindowWeakHandle = slint::ComponentWeakHandle(mainWindow), &model,
-                                &lastModelId](const slint::SharedString &nextEntryText) {
+    mainWindow->on_modelAppend([&model, &lastModelId](const slint::SharedString &nextEntryText) {
         // Check if input string valid
         const char *trimmedEntryText = trim(nextEntryText.data());
         if (trimmedEntryText == nullptr || *trimmedEntryText == '\0')
@@ -53,36 +53,21 @@ int main(int argc, char *argv[])
         }
 
         // Add new entry to model
-        const Entry nextEntry = {lastModelId, trimmedEntryText};
         lastModelId++;
-        model.push_back(nextEntry);
-
-        // Update
-        auto mainWindow = *mainWindowWeakHandle.lock();
-        mainWindow->set_model(std::make_shared<slint::VectorModel<Entry>>(model));
+        model->push_back({lastModelId, trimmedEntryText});
     });
 
-    mainWindow->on_modelDeleteEntry(
-        [mainWindowWeakHandle = slint::ComponentWeakHandle(mainWindow), &model](const int idToDelete) {
-            // Find matching ids and delete
-            for (auto iterator = model.begin(); iterator != model.end();)
+    mainWindow->on_modelDeleteEntry([&model](const int idToDelete) {
+        // Find matching ids and delete
+        for (int index = 0; index < model->row_count(); index++)
+        {
+            if (model->row_data(index)->id == idToDelete)
             {
-                if (iterator->id == idToDelete)
-                {
-                    iterator = model.erase(iterator);
-                }
-                else
-                {
-                    iterator++;
-                }
+                model->erase(index);
+                index--;
             }
-
-            // Update
-            auto mainWindow = *mainWindowWeakHandle.lock();
-            mainWindow->set_model(std::make_shared<slint::VectorModel<Entry>>(model));
-        });
-
-    mainWindow->set_model(std::make_shared<slint::VectorModel<Entry>>(model));
+        }
+    });
 
     mainWindow->run();
     return 0;
