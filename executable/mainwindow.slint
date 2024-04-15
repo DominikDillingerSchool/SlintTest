@@ -10,7 +10,6 @@ export component MainWindow {
     in-out property <[Entry]> model: [];
     FocusScope {
         key-pressed(event) => {
-            debug(event.text);
             if (event.modifiers.control && event.modifiers.shift && (event.text == "Q" || event.text == "q")) {
                 textEdit.text = root.benchmark();
             }
