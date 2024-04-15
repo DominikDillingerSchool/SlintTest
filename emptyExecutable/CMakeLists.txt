@@ -2,7 +2,6 @@ if(NOT QT_DEFAULT_MAJOR_VERSION)
     set(QT_DEFAULT_MAJOR_VERSION 5 CACHE STRING "Qt version to use (5 or 6), defaults to 5")
 endif()
 
-# find_package(Slint REQUIRED)
 find_package(Qt${QT_DEFAULT_MAJOR_VERSION} REQUIRED COMPONENTS Core Gui Widgets)
 
 ## Sources
@@ -32,7 +31,7 @@ target_include_directories(${PROJECT_NAME}EmptyExecutable PRIVATE ${CMAKE_CURREN
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   target_link_options(${PROJECT_NAME}EmptyExecutable PRIVATE -stdlib=libc++ -lpthread -g)
 elseif(MSVC)
-  # target_link_options(${PROJECT_NAME}EmptyExecutable PRIVATE "/MT")
+  target_compile_options(${PROJECT_NAME}EmptyExecutable PRIVATE "/MT")
 else()
   target_link_options(${PROJECT_NAME}EmptyExecutable PRIVATE -static-libstdc++ -static-libgcc -g)
 endif()

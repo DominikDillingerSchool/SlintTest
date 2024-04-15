@@ -1,17 +1,22 @@
 import { Button, TextEdit, ListView } from "std-widgets.slint";
-
-struct Entry {
-    id: int,
-    text: string
-}
+import { Entry } from "entry.slint";
 
 export component MainWindow {
     width: 500px;
     height: 500px;
-
     callback modelAppend(string);
     callback modelDeleteEntry(int);
+    callback benchmark() -> string;
     in-out property <[Entry]> model: [];
+    FocusScope {
+        key-pressed(event) => {
+            debug(event.text);
+            if (event.modifiers.control && event.modifiers.shift && event.text == "Q") {
+                textEdit.text = root.benchmark();
+            }
+            accept
+        }
+    }
 
     VerticalLayout {
         width: 100%;
@@ -41,6 +46,7 @@ export component MainWindow {
                         text: data.text;
                         width: parent.width * 0.8;
                     }
+
                     Button {
                         text: "Delete";
                         width: parent.width * 0.2;
