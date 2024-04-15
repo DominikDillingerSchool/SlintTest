@@ -12,6 +12,7 @@
 
 #include <psapi.h>
 #elif defined(__linux__)
+#include <fstream>
 #include <unistd.h>
 #elif defined(__EMSCRIPTEN__)
 #include <emscripten.h>
