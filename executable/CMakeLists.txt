@@ -48,31 +48,3 @@ endif()
 ## Install
 install(TARGETS ${PROJECT_NAME}Executable DESTINATION executable)
 install(FILES $<TARGET_RUNTIME_DLLS:${PROJECT_NAME}Executable> DESTINATION executable)
-
-# Find the C++ compiler path
-find_program(CMAKE_CXX_COMPILER NAMES c++ g++ cl)
-
-# Check if the C++ compiler was found
-if(CMAKE_CXX_COMPILER)
-  # Get the directory where the C++ compiler is located
-  get_filename_component(COMPILER_PATH "${CMAKE_CXX_COMPILER}" DIRECTORY)
-  message(STATUS "Found C++ compiler: ${CMAKE_CXX_COMPILER}")
-else()
-  message(FATAL_ERROR "Could not find C++ compiler")
-endif()
-# get_target_property(SLINT_EXECUTABLE_LOCATION Slint::Slint PARENT_DIRECTORY)
-# if(SLINT_EXECUTABLE_LOCATION STREQUAL "SLINT_EXECUTABLE_LOCATION-NOTFOUND")
-#  message(FATAL_ERROR "Could not find Slint exectuable location. Missing variable SLINT_EXECUTABLE_LOCATION.")
-# endif()
-# message(STATUS "Found SLINT_EXECUTABLE_LOCATION ${SLINT_EXECUTABLE_LOCATION}")
-get_target_property(QT_EXECUTABLE_LOCATION Qt${QT_DEFAULT_MAJOR_VERSION}::Core LOCATION)
-if(QT_EXECUTABLE_LOCATION STREQUAL "QT_EXECUTABLE_LOCATION-NOTFOUND")
-  message(FATAL_ERROR "Could not find QT exectuable location. Missing variable QT_EXECUTABLE_LOCATION.")
-endif()
-message(STATUS "Found QT_EXECUTABLE_LOCATION: ${QT_EXECUTABLE_LOCATION}")
-install(TARGETS ${PROJECT_NAME}Executable RUNTIME_DEPENDENCIES
-  PRE_EXCLUDE_REGEXES "api-ms-" "ext-ms-"
-  POST_EXCLUDE_REGEXES ".*system32/.*\\.dll"
-  DIRECTORIES [ ${COMPILER_PATH} "${QT_EXECUTABLE_LOCATION}/.." ]
-  DESTINATION executable
-)
