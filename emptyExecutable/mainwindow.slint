@@ -1,4 +1,13 @@
 export component MainWindow {
     width: 500px;
     height: 500px;
+    callback benchmark();
+    FocusScope {
+        key-pressed(event) => {
+            if (event.modifiers.control && event.modifiers.shift && (event.text == "Q" || event.text == "q")) {
+                root.benchmark();
+            }
+            accept
+        }
+    }
 }

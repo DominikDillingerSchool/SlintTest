@@ -6,15 +6,15 @@ find_package(Qt${QT_DEFAULT_MAJOR_VERSION} REQUIRED COMPONENTS Core Gui Widgets)
 
 ## Sources
 set(HDRS
-	)
+)
 
 set(UI
-    "mainwindow.slint"
-    )
+  "mainwindow.slint"
+)
 
 set(SRCS
-    "main.cpp"
-	)
+  "main.cpp"
+)
 
 set(PROJECT_SOURCES ${SRCS} ${HDRS})
 
