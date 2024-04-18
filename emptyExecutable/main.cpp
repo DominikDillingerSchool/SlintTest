@@ -9,6 +9,7 @@
 #elif defined(__linux__)
 #include <fcntl.h>
 #include <fstream>
+#include <sstream>
 #include <unistd.h>
 #elif defined(__EMSCRIPTEN__)
 #include <emscripten.h>
