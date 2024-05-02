@@ -88,7 +88,7 @@ std::string Benchmark::benchmark(std::shared_ptr<slint::VectorModel<Entry>> &mod
     }
 
     auto endPoint = std::chrono::high_resolution_clock::now();
-    const auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(endPoint - startPoint).count();
+    const auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(endPoint - startPoint).count();
     const size_t memoryUsage = getCurrentMemoryUsage();
 
     std::stringstream stream;
